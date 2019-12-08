@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<title>Quantitative Political Science - POL2045</title>
+<meta property="og:title" content="Quantitative Political Science - POL2045">
+
+
+  <link href='../favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="../css/fonts.css" media="all">
+<link rel="stylesheet" href="../css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="../" class="nav-logo">
+    <img src="../images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="../quantspolscience/">1. Quantitative Political Science</a></li>
+    
+    <li><a href="../descriptive/">2. Descriptive Statistics</a></li>
+    
+    <li><a href="../climit/">3. Central limit theorem</a></li>
+    
+    <li><a href="../ttest/">4. Bivariate analysis</a></li>
+    
+    <li><a href="../graphs/">5. Graphs</a></li>
+    
+    <li><a href="../regression/">6. Regression Analysis</a></li>
+    
+    <li><a href="../mregression/">7. Multivariate Regression Analysis</a></li>
+    
+    <li><a href="../binary/">8. Binary Regression Analysis</a></li>
+    
+    <li><a href="../interaction/">9. Interaction Terms</a></li>
+    
+    <li><a href="../about/">Useful resources</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+
+    <h1 class="article-title">Quantitative Political Science</h1>
+
+    
+
+    <div class="article-content">
+      
+
+
+<div id="basic-steps" class="section level1">
+<h1>Basic Steps</h1>
+<p>Install R and RStudio on your computer by visiting the <a href="https://appstore.surrey.ac.uk/login">Surrey App Store</a> and logging in using your university account details. You may find additional information on how to install R and RStudio on your personal computer on SurreyLearn.</p>
+<p>When you start RStudio for the first time you will see three panes:</p>
+<div class="figure">
+<img src=".././quantspolscience_files/RStudio1.PNG" alt="The three panes you see the first time you start RStudio" style="width:98.0%" />
+<p class="caption">The three panes you see the first time you start RStudio</p>
+</div>
+<p>Let’s see what each one these windows is doing. You can type some code at the Console window and when you press <strong>ENTER</strong> the software will run (execute) that code. Typically, you will see some output in the Console, as the results from your analysis, but sometimes you might also get a warning message or an error message. Don’t worry if you get an error message <span style="color:red"> <strong>(typically they appear in red colour)</strong> </span>, nothing will happen!</p>
+<p>Let’s see how the Console is working by calculating some simple maths to familiarise ourselves with RStudio.</p>
+<pre class="r"><code>5+5</code></pre>
+<pre><code>## [1] 10</code></pre>
+<p>Basic mathematical operations</p>
+<p>now let’s try to do the same by using some mathematical operations such as subtraction ( - ), division ( / ), and multiplication ( * ).</p>
+<p><strong>Subtraction</strong></p>
+<pre class="r"><code>5-3</code></pre>
+<pre><code>## [1] 2</code></pre>
+<p><strong>Division</strong></p>
+<pre class="r"><code>10/6</code></pre>
+<pre><code>## [1] 1.666667</code></pre>
+<p><strong>Multiplication</strong></p>
+<pre class="r"><code>7*5</code></pre>
+<pre><code>## [1] 35</code></pre>
+<p>You can edit your code in the console by using the arrow keys on your keyboard. The <strong>UP</strong> and <strong>DOWN</strong> keys will re-run your code without typing it again. You may edit your code by using the <strong>LEFT</strong> and/or the <strong>RIGHT</strong> keys</p>
+<pre><code>Additional training</code></pre>
+<pre><code>Calculate the square root of 25, and assign a name to the mathematical expression</code></pre>
+<strong>Note:</strong> <a href="https://rstudio.com/wp-content/uploads/2016/06/r-cheat-sheet.pdf">RStudio Base cheatsheet</a>
+</div>
+</div>
+<div id="vectors" class="section level1">
+<h1>Vectors</h1>
+<p>A vector is a collection of elements, a basic data structure. Vectors are crucial in RStudio. The data types contained by a vector could be logical, integer, or character.
+</br></p>
+<p>To create a vector in R you should use a very useful function, the <code>c()</code> function. The c stands for <strong>c</strong>ombine, because multiple elements are combined into a vector.</p>
+<pre class="r"><code>x &lt;-c(1,2,3,4,5,6,7,8,9,10)</code></pre>
+<pre class="r"><code>x</code></pre>
+<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
+<p>An important property of vectors is their length</p>
+<pre class="r"><code>length(x)</code></pre>
+<pre><code>## [1] 10</code></pre>
+<p>Additionally, you may create a vector using the <code>seq()</code> function. The seq() function generates a sequence of numbers. For example is you want to generate a sequence of numbers from 0 to 30 incremented by 3 you write</p>
+<pre class="r"><code>seq(from=0, to=30, by=3)</code></pre>
+<pre><code>##  [1]  0  3  6  9 12 15 18 21 24 27 30</code></pre>
+</div>
+<div id="functions-in-rstudio" class="section level1">
+<h1>Functions in RStudio</h1>
+<p>What is a function? In simple words, a function is a set of instructions that you want to use. A function is a code written to carry out a specific task. For example, you want to know the sum of <span class="math inline">\(1+2+3\)</span>, instead of using the <span class="math inline">\(+\)</span> sign we can use the sum function to add numbers. For example:</p>
+<pre class="r"><code>1+2+3</code></pre>
+<pre><code>## [1] 6</code></pre>
+<p>or</p>
+<pre class="r"><code>sum(1,2,3)</code></pre>
+<pre><code>## [1] 6</code></pre>
+<p>or</p>
+<pre class="r"><code>sum(1:3)</code></pre>
+<pre><code>## [1] 6</code></pre>
+<pre><code>Additional training</code></pre>
+<pre><code>Create a vector of length 25 and calculate its mean</code></pre>
+<p><strong>Note:</strong> <a href="https://rstudio.com/wp-content/uploads/2016/06/r-cheat-sheet.pdf">RStudio Base cheatsheet</a></p>
+</div>
+<div id="getting-help" class="section level1">
+<h1>Getting Help</h1>
+<p>Learning a new software is like learning a new language, and some functions or commands will be like unknown words. An important function in R is help. For example, if we wanted to know how exactly to use the sum function, we could type <code>help(sum)</code>. You will see the results in the right-hand panel.</p>
+<pre class="r"><code>help(sum)</code></pre>
+<p>or by using the question mark sign <span class="math inline">\(?\)</span></p>
+<pre class="r"><code>?sum</code></pre>
+<div class="figure">
+<img src=".././quantspolscience_files/Fig_14.PNG" alt="RStudio-Help" />
+<p class="caption">RStudio-Help</p>
+</div>
+</div>
+<div id="how-to-use-the-help-page" class="section level1">
+<h1>How to use the help page</h1>
+<p>All help pages, like the one shown above, follow the same structure.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Description</strong></td>
+<td>A brief description of the function</td>
+</tr>
+<tr class="even">
+<td><strong>Usage</strong></td>
+<td>The complete syntax that includes all possible functions</td>
+</tr>
+<tr class="odd">
+<td><strong>Arguments</strong></td>
+<td>A brief explanation of all arguments</td>
+</tr>
+<tr class="even">
+<td><strong>Details</strong></td>
+<td>Any relevant detail related to the function and its arguments</td>
+</tr>
+<tr class="odd">
+<td><strong>Value</strong></td>
+<td>The output values of the function</td>
+</tr>
+<tr class="even">
+<td><strong>Examples</strong></td>
+<td>Examples of how to use the function</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="the-assignment-operator" class="section level1">
+<h1>The assignment operator</h1>
+<p>We now know how to use a function using the parenthesis sign <span class="math inline">\(()\)</span>, but we are also interested in the output of a function.</p>
+<p>In RStudio we use the assignment operator ← for creating or updating existing objects. If we wanted to save the results of <code>sum(1,2,3)</code>, we would have to use the assignment operator</p>
+<pre class="r"><code>mysum &lt;-sum(1:3)</code></pre>
+<p>the line above created a new object called (mysum) in our environment and saves the result of the <code>sum(1, 2, 3)</code></p>
+<p>Now, if you look at the Environment pane in RStudio you will see <strong>mysum</strong></p>
+<p><img src=".././quantspolscience_files/Fig_18.PNG" alt="The enviroment pane" />     </p>
+<p>If you want to delete objects from the environment, you can use the broom button.</p>
+<center>
+Now that you know how to use the assignment operator, you can give any name to your graphs, variables, datasets, literally to any object in RStudio
+</center>
+<p>You may give to your objects any name you like but let’s admit it, some names are just bad names… You may find below some examples of good names and bad names</p>
+<p>Avoid using names such as:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Good names</th>
+<th>Bad names</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>my_model</strong></td>
+<td>this.is.my.model</td>
+</tr>
+<tr class="even">
+<td><strong>M1</strong></td>
+<td>m</td>
+</tr>
+<tr class="odd">
+<td><strong>model1</strong></td>
+<td>data, function (i.e. same name as commands )</td>
+</tr>
+<tr class="even">
+<td><strong>model.1</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="scripts" class="section level1">
+<h1>Scripts</h1>
+<p>The Console is very important and useful for small tasks but if you are working on your assignment or any other project of yours you have to save your work. This is very important- first of all because you have to submit this file with your assignment, second of all because you may make a mistake and in this case you don’t want to re-write everything!</p>
+<p>Script files in R are similar to text files. In RStudio the so-called Script files are plain text, like a notepad that contains R code. You may edit a Script as you are editing a Word or a text file.</p>
+<p>You may see below how to create a new script file:</p>
+<div class="figure">
+<img src=".././quantspolscience_files/Fig_22.PNG" alt="Script files" />
+<p class="caption">Script files</p>
+</div>
+<p>Once you created a new Script give it a “good name”, and save it. For example, you may call it seminar_1.</p>
+<p>How to run your code. There are different ways of doing so. If you want to:</p>
+<pre><code>* Run one line at a time then place the cursor on the line you want and hit CTRL+ENTER or hit the Run button at the top right side of the Console pane. 
+
+* Many lines at the same time then select the lines and hit CTRL+ENTER or use the Run button.
+
+* The entire Script, then use the Source button </code></pre>
+</div>
+<div id="data-frames" class="section level1">
+<h1>Data Frames</h1>
+<p>In RStudio a data frame is again an object, but this time an object that stores data. Is similar to a spreadsheet. As in all statistical software variables are kept in columns and observations are in rows.</p>
+<p>You may create a data frame manually if you want but living in the age of big data this is rarely the case! There are many example datasets pre-loaded in RStudio</p>
+<p>Let’s have a look at one of these pre-loaded data frames. The data frame is called longley</p>
+<p>Let’s see the variables included in the dataset</p>
+<pre class="r"><code>data(&quot;longley&quot;)</code></pre>
+<pre class="r"><code>View(longley)</code></pre>
+<div class="figure">
+<img src=".././quantspolscience_files/Fig_24.PNG" alt="Data frame" />
+<p class="caption">Data frame</p>
+</div>
+<p>If we want to see individuals columns, in other words, a specific variable in the data frame, then we use the $ sign. Let’s start by observing the Unemployment column.</p>
+<pre class="r"><code>longley$Unemployed</code></pre>
+<pre><code>##  [1] 235.6 232.5 368.2 335.1 209.9 193.2 187.0 357.8 290.4 282.2 293.6 468.1
+## [13] 381.3 393.1 480.6 400.7</code></pre>
+<p>In addition, often we want to access only certain observations (rows) or only certain variables (columns). By using the square brackets [ ] we subset the data frame. In the square brackets, we insert the coordinates for a row and a column. The row is always first followed by the column. For example, longey[7, 5] gives us the 7th row and the 5th column. If we leave the column coordinate empty then we want to see all columns longey[7, ]. If we leave the row coordinate empty then we want all columns.</p>
+<pre class="r"><code>longley[7,5]</code></pre>
+<pre><code>## [1] 115.094</code></pre>
+<p>Leave the column coordinate empty to see the 7th row</p>
+<pre class="r"><code>longley[7, ]</code></pre>
+<pre><code>##      GNP.deflator     GNP Unemployed Armed.Forces Population Year Employed
+## 1953           99 365.385        187        354.7    115.094 1953   64.989</code></pre>
+<p>Leave the row empty to see the 5th column</p>
+<pre class="r"><code>longley[ ,5]</code></pre>
+<pre><code>##  [1] 107.608 108.632 109.773 110.929 112.075 113.270 115.094 116.219 117.388
+## [10] 118.734 120.445 121.950 123.366 125.368 127.852 130.081</code></pre>
+<p>We may see the first ten rows of a dataset by adding a colon in the brackets</p>
+<pre class="r"><code>longley[1:10, ]</code></pre>
+<pre><code>##      GNP.deflator     GNP Unemployed Armed.Forces Population Year Employed
+## 1947         83.0 234.289      235.6        159.0    107.608 1947   60.323
+## 1948         88.5 259.426      232.5        145.6    108.632 1948   61.122
+## 1949         88.2 258.054      368.2        161.6    109.773 1949   60.171
+## 1950         89.5 284.599      335.1        165.0    110.929 1950   61.187
+## 1951         96.2 328.975      209.9        309.9    112.075 1951   63.221
+## 1952         98.1 346.999      193.2        359.4    113.270 1952   63.639
+## 1953         99.0 365.385      187.0        354.7    115.094 1953   64.989
+## 1954        100.0 363.112      357.8        335.0    116.219 1954   63.761
+## 1955        101.2 397.469      290.4        304.8    117.388 1955   66.019
+## 1956        104.6 419.180      282.2        285.7    118.734 1956   67.857</code></pre>
+</div>
+<div id="plots" class="section level1">
+<h1>Plots</h1>
+<p>Let’s create a plot from our dataset. Let’s start by creating a scatterplot with the one axis (X) representing the Year and the other (Y)axis the Gross National Product</p>
+<pre class="r"><code>plot(longley$Year,longley$GNP)</code></pre>
+<p><img src="../quantspolscience_files/figure-html/longleyplots-1.png" width="672" /></p>
+<p>to create the same plot but by using a line instead of dots we add the argument <code>type=&quot;l&quot;</code></p>
+<pre class="r"><code>plot(longley$Year,longley$GNP,type = &quot;l&quot;)</code></pre>
+<p><img src="../quantspolscience_files/figure-html/longleyplotsline-1.png" width="672" /></p>
+<pre><code>Additional training</code></pre>
+<pre><code>Use the title() function, to give labels to the axes, and a title to your plot. 
+The examples in the help are particularly informative.</code></pre>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="../index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="../images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="../js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

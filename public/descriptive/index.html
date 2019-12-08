@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<title>Descriptive Statistics - POL2045</title>
+<meta property="og:title" content="Descriptive Statistics - POL2045">
+
+
+  <link href='../favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="../css/fonts.css" media="all">
+<link rel="stylesheet" href="../css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="../" class="nav-logo">
+    <img src="../images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="../quantspolscience/">1. Quantitative Political Science</a></li>
+    
+    <li><a href="../descriptive/">2. Descriptive Statistics</a></li>
+    
+    <li><a href="../climit/">3. Central limit theorem</a></li>
+    
+    <li><a href="../ttest/">4. Bivariate analysis</a></li>
+    
+    <li><a href="../graphs/">5. Graphs</a></li>
+    
+    <li><a href="../regression/">6. Regression Analysis</a></li>
+    
+    <li><a href="../mregression/">7. Multivariate Regression Analysis</a></li>
+    
+    <li><a href="../binary/">8. Binary Regression Analysis</a></li>
+    
+    <li><a href="../interaction/">9. Interaction Terms</a></li>
+    
+    <li><a href="../about/">Useful resources</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+
+    <h1 class="article-title">Descriptive Statistics</h1>
+
+    
+
+    <div class="article-content">
+      
+
+
+<div id="measures-of-central-tendency" class="section level1">
+<h1>Measures of Central Tendency</h1>
+<div id="where-to-find-data" class="section level2">
+<h2>Where to find data</h2>
+<p>When we are starting a new research project, quite often we assume that we need to collect data. However, this is not always the case. Actually, there are many good quality datasets available to use. Most surveys are designed by very experienced researchers and cover a wide range of topics.</p>
+<p>For example, <a href="https://zacat.gesis.org/webview/index.jsp">GESIS-Leibniz Institute of the Social Sciences</a>,houses almost all comparative and German social surveys in Europe. Almost all European countries have a data archive. In the UK we have the <a href="https://ukdataservice.ac.uk/">UK Data Archive</a>, the UKDA is the national data archive. Additionally, the <a href="https://datacatalog.worldbank.org/">World Bank</a> and <a href="https://ec.europa.eu/eurostat/data/database">Eurostat</a>, the statistical office of the European Union, provide a wide range of statistics, such as the GDP per Capita, inflation, unemployment, etc.</p>
+<p>To download data you need to register first, this is easy to do, you only need an email address. Once you register you may download any dataset you are interested in, for free.</p>
+<p>In our module we will use the <a href="https://europeanvaluesstudy.eu/">European Value Study (EVS)</a>. EVS, provides insights into the ideas, beliefs, preferences, attitudes, values and opinions of citizens all over Europe. The European Values Study covers a wide range of human values. The main topics covered concern concepts such as family, work, environment, perceptions of life, politics and society, religion and morality, national identity.</p>
+<p>You may download the dataset from our module’s website on SurreyLearn.</p>
+</div>
+</div>
+<div id="how-to-load-data-in-rstudio" class="section level1">
+<h1>How to load data in RStudio</h1>
+<p>As you may have already noticed by visiting GESIS and the UKDA, data comes in many different formats, some examples are comma-separated values files (.csv), SPSS files (.spss), STATA files (.dta), excel files (.xls). In RStudio you may upload all datasets mentioned above, but R’s native file format is .RData. To load an RData file you should use a function called <code>load()</code>.</p>
+<p>In SurreyLearn you will find the codebook and the questionnaire of the dataset. Codebooks provide a detailed description of the dataset, such as the name and the code for each variable.</p>
+<p>To upload a dataset that is not stored in R’s native file format we will need to install an additional package.
+R packages are like apps, we install them in order to use additional features available in R. To load packages that are foreign to R’s native language we should use a package called <code>haven()</code>. To do so we use the function called <code>install.packages()</code>. In the brackets we include the name of the package we would like to install in quotation marks(&quot; &quot;).</p>
+<p>To do so we type: <code>install.packages(&quot;haven&quot;)</code></p>
+<p>Once the package is installed we may ask RStudio to use it by calling the function <code>library()</code>. For example, in order to use the haven package we type <code>library(haven)</code>.</p>
+<pre class="r"><code>library(haven)</code></pre>
+<p>Alternatively, you may install any package you need by clicking on the Packages tab in the bottom right pane and then click install. A dialog box will appear. In the install Packages dialog write the name of the package you want to install and click install. This will install the package you are looking for.</p>
+<div class="figure">
+<img src=".././descriptive_files/Figure_36.PNG" alt="Install packages" />
+<p class="caption">Install packages</p>
+</div>
+</div>
+<div id="descriptive-statistics" class="section level1">
+<h1>Descriptive Statistics</h1>
+<p>Let’s start by creating a folder dedicated to our module. On your computer go to My Documents and create a new folder entitled POL2045. Go back to SurreyLearn and download the dataset in the folder. Go back to RStudio, create a new script file, name it <code>Lab2.R</code>.</p>
+<p>The first two lines of your script file should include the following three lines.</p>
+<pre><code>rm(list = ls()) # This command will clean your workspace
+setwd(&quot;~/POL2045&quot;) # This command will tell RStudio to read and save files at the folder POL2045
+load(&quot;EVS_UK.RData&quot;)</code></pre>
+<p>We can now start exploring our data. We can look the names of our variables with the <code>names()</code> function.</p>
+<pre class="r"><code>names(EVS_UK)</code></pre>
+<pre><code>##  [1] &quot;year&quot;          &quot;country&quot;       &quot;v5&quot;            &quot;v39&quot;          
+##  [5] &quot;v48&quot;           &quot;v49&quot;           &quot;v102&quot;          &quot;v103&quot;         
+##  [9] &quot;v133&quot;          &quot;v134&quot;          &quot;v135&quot;          &quot;v136&quot;         
+## [13] &quot;v137&quot;          &quot;v138&quot;          &quot;v139&quot;          &quot;v140&quot;         
+## [17] &quot;v141&quot;          &quot;v142&quot;          &quot;v144&quot;          &quot;v172&quot;         
+## [21] &quot;v173&quot;          &quot;v174_cs&quot;       &quot;v184&quot;          &quot;v185&quot;         
+## [25] &quot;v186&quot;          &quot;v187&quot;          &quot;v188&quot;          &quot;v198&quot;         
+## [29] &quot;v225&quot;          &quot;v226&quot;          &quot;age&quot;           &quot;v243_r_weight&quot;</code></pre>
+<p>To see how our dataset looks like we can use the <code>head()</code> function</p>
+<pre class="r"><code>head(EVS_UK)</code></pre>
+<pre><code>## # A tibble: 6 x 32
+##         year   country      v5      v39     v48     v49     v102     v103
+##    &lt;dbl+lbl&gt; &lt;dbl+lbl&gt; &lt;dbl+l&gt; &lt;dbl+lb&gt; &lt;dbl+l&gt; &lt;dbl+l&gt; &lt;dbl+lb&gt; &lt;dbl+lb&gt;
+## 1 2018 [201… 826 [Gre… 3 [not…  4       2 [agr… 4 [dis… NA        1 [ind…
+## 2 2018 [201… 826 [Gre… 1 [ver…  7       4 [dis… 4 [dis…  1 [the… 10 [sta…
+## 3 2018 [201… 826 [Gre… 2 [qui… 10 [sat… 1 [agr… 2 [agr…  8        9      
+## 4 2018 [201… 826 [Gre… 2 [qui…  8       4 [dis… 2 [agr…  4        5      
+## 5 2018 [201… 826 [Gre… 3 [not…  5       4 [dis… 3 [nei…  5        8      
+## 6 2018 [201… 826 [Gre… 2 [qui…  3       2 [agr… 2 [agr…  5        3      
+## # … with 24 more variables: v133 &lt;dbl+lbl&gt;, v134 &lt;dbl+lbl&gt;, v135 &lt;dbl+lbl&gt;,
+## #   v136 &lt;dbl+lbl&gt;, v137 &lt;dbl+lbl&gt;, v138 &lt;dbl+lbl&gt;, v139 &lt;dbl+lbl&gt;,
+## #   v140 &lt;dbl+lbl&gt;, v141 &lt;dbl+lbl&gt;, v142 &lt;dbl+lbl&gt;, v144 &lt;dbl+lbl&gt;,
+## #   v172 &lt;dbl+lbl&gt;, v173 &lt;dbl+lbl&gt;, v174_cs &lt;dbl+lbl&gt;, v184 &lt;dbl+lbl&gt;,
+## #   v185 &lt;dbl+lbl&gt;, v186 &lt;dbl+lbl&gt;, v187 &lt;dbl+lbl&gt;, v188 &lt;dbl+lbl&gt;,
+## #   v198 &lt;dbl+lbl&gt;, v225 &lt;dbl+lbl&gt;, v226 &lt;dbl+lbl&gt;, age &lt;dbl+lbl&gt;,
+## #   v243_r_weight &lt;dbl+lbl&gt;</code></pre>
+<p>Let’s explore what people think about democracy</p>
+<pre class="r"><code>boxplot(EVS_UK$v137, main= &quot;Attitudes towards democracy&quot;,
+ylab= &quot;Agree/Disagree&quot;)</code></pre>
+<p><img src="../descriptive_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<div id="the-mean-and-the-median" class="section level2">
+<h2>The mean and the median</h2>
+<p>The arithmetic mean, in other words the average, is the most commonly used measure of central tendency. Even without realising it we often calculate the mean, for example we use the mean to calculate how much energy we are using per month.</p>
+<p>We all know how to calculate the mean, by diving the sum of all observations by the total number of observations. Let’s try to do that in R. First, we need to calculate the sum of all observations. We can do that in R by using the <code>sum()</code> function:</p>
+<pre class="r"><code>sum(EVS_UK$v198,na.rm=TRUE)  # na.rm deletes all cases with missing values before calculating the variance</code></pre>
+<pre><code>## [1] 11643</code></pre>
+<p>the next step will be to divide by the total number of all observation. We do so by using the <code>length()</code> function:</p>
+<pre class="r"><code>length(EVS_UK$v198)</code></pre>
+<pre><code>## [1] 1788</code></pre>
+<p>Since our overall goal is to calculate the mean we could do so by dividing the sum of all observations by the total number of observations:</p>
+<pre class="r"><code>sum(EVS_UK$v198,na.rm=TRUE) / length(EVS_UK$v198)</code></pre>
+<pre><code>## [1] 6.511745</code></pre>
+<p>As you may already know by now R has some build-in (base) functions that are there to make everything easier for us. In this case, when you want to calculate the mean you simply use the <code>mean()</code> function. Additionally, you may calculate the median by using the <code>median ()</code> function.</p>
+<pre><code>Additional training</code></pre>
+<pre><code>Calculate the mean and the median for the variables describing attitudes towards immigration 
+using the function described above.</code></pre>
+</div>
+<div id="the-mode" class="section level2">
+<h2>The Mode</h2>
+<p>In contrast to the other two measures of central tendency we don’t need a build-in function to calculate the mode. Simply because it is very easy to do it on our own. Think what the mode is…</p>
+<p>To find the value that appears most often, all we have to do is to tabulate the variable we are interested in. This is easily done with the <code>table()</code> function.</p>
+<pre class="r"><code>dem_mode&lt;-table(EVS_UK$v142)
+dem_mode</code></pre>
+<pre><code>## 
+##    1    2    3    4    5    6    7    8    9   10 
+##   24    8   11   15   90   66   84  212  223 1031</code></pre>
+<p>In simple words the <code>table()</code> function creates a table that tell us the number of people (cases) that fall into each category. For example, 11 responders place themselves at number 3. In this case the mode is 10, because it is the response that occurs more often, 1031 times.</p>
+<p>This approach, is practical only when our variable has a small number of values, when our variable consists of a long list of numbers then we need a slightly more sophisticated approach. Let’s see that step by step. Our first step is to sort our variable ranging from the largest to the smallest value. This way the first value is our mode!</p>
+<pre class="r"><code>data_sort&lt;- sort(dem_mode, decreasing=TRUE)
+data_sort</code></pre>
+<pre><code>## 
+##   10    9    8    5    7    6    1    4    3    2 
+## 1031  223  212   90   84   66   24   15   11    8</code></pre>
+</div>
+</div>
+<div id="measures-of-dispersion" class="section level1">
+<h1>Measures of dispersion</h1>
+<p>The <strong>range</strong> of a variable is the simplest and easy measure of dispersion we can calculate, but at the same time is the less reliable one, this is because it depends only upon two values- the two extremes- that quite often are also outliers - they are far away from the centre of the distribution.</p>
+<p>The <strong>variance</strong> is a measure that takes into consideration how far is each value from the mean. To calculate the variance we have to take into account that negative values might cancel out the positive ones, the mathematical trick to overcome this issue is to square the deviations from the mean. For example if the deviation from the mean is equal to <span class="math inline">\(-3\)</span> the squared deviation is equal to <span class="math inline">\(9\)</span>. The downside of this approach is that the <em>variance</em> is reporting the squared deviation from the mean, in other words not in the same units as the observed variable, and thus the interpretation is sometimes difficult. But, the variance has some very important uses!</p>
+<p>To calculate the variance in RStudio we use the <code>var()</code> function.</p>
+<pre class="r"><code>table(EVS_UK$v142)</code></pre>
+<pre><code>## 
+##    1    2    3    4    5    6    7    8    9   10 
+##   24    8   11   15   90   66   84  212  223 1031</code></pre>
+<pre class="r"><code>var(EVS_UK$v142,na.rm=TRUE) # na.rm deletes all cases with missing values before calculating the variance</code></pre>
+<pre><code>## [1] 3.552088</code></pre>
+<p>To overcome this issue we calculate a statistical quantity called <em>standard deviation</em> . Think of the standard deviation as the average amount the values of a variable deviate from the mean. The greater the dispersion, the bigger the deviation and eventually the standard deviation (sd).</p>
+<p>In R we may calculate the standard deviation by using the <code>sd()</code> function.</p>
+<pre class="r"><code>sd(EVS_UK$v142, na.rm=TRUE) </code></pre>
+<pre><code>## [1] 1.884698</code></pre>
+</div>
+<div id="measures-of-central-tendency-for-factor-or-categorical-variables" class="section level1">
+<h1>Measures of central tendency for factor or categorical variables</h1>
+<p>Some variables, consist of named categories, e.g. the name of your favourite brand. A category-variable, or a categorical variable refers to any variable that puts individuals into categories. These variables are also called nominal variables. The word nominal comes from Latin (<em>nominalis</em>=of a name), because we are giving names to the values of our variable.</p>
+<p>With categorical variables we want to understand the frequency with which each value appears in our dataset. As you already know the easiest way to do so is by producing a table. Remember the <code>table ()</code> function. The appropriate measure of central tendency for categorical variables is the <strong>mode</strong> and/or the <strong>median</strong>.</p>
+<p>Below we will learn some basic data manipulation for categorical variables. Starting with identifying the <code>class()</code> of a variable before we move to assigning a new name to variable and to the values of a categorical variable.</p>
+<p>There are numerous data types in R. The most frequent used ones are numeric, character (string) or factor, and logical (TRUE or FALSE). To check the type of data contained in a variable we can use the <code>class()</code> function.</p>
+<pre class="r"><code>class(EVS_UK$v174_cs)</code></pre>
+<pre><code>## [1] &quot;haven_labelled&quot;</code></pre>
+<p>To find the lenght of a character variable we use the <code>nchar()</code> function.</p>
+<p>R promotes numeric variables and sometimes when you import SPSS files as RStudio is listing them as <code>haven_labelled</code>. If accidentally your factor variable is listed as numeric or <code>haven_labelled</code>, you may convert it to factor by using the <code>as.factor()</code> function. Let’s examine the variable describing education. The variable has a very technical name, that is why we should assign a meaningful name to the variable.</p>
+<pre class="r"><code>EVS_UK$education&lt;-EVS_UK$v243_r_weight
+class(EVS_UK$education)</code></pre>
+<pre><code>## [1] &quot;haven_labelled&quot;</code></pre>
+<p>Accidentally RStudio, listed education as a haven_labelled variable. As you know, education is a classic example of a categorical variable.How can we convert a numerical variable to a factor? This is easy.
+Note that as the same time we will learn how to covert a variable from numeric to factor but also how to name values.</p>
+<p>Let’s do it!</p>
+<pre class="r"><code>EVS_UK$education &lt;- factor(EVS_UK$education,
+                         levels = c(1, 2, 3),
+                         labels = c(&quot;Low&quot;, &quot;Medium&quot;, &quot;Upper&quot;))
+table(EVS_UK$education)</code></pre>
+<pre><code>## 
+##    Low Medium  Upper 
+##    590    313    885</code></pre>
+<p>Let’s examine our new factor variable with a frequency table</p>
+<pre class="r"><code>table(EVS_UK$education)</code></pre>
+<pre><code>## 
+##    Low Medium  Upper 
+##    590    313    885</code></pre>
+<p>The most common graphical representation of categorical variables is bar graphs and pie charts.</p>
+<pre class="r"><code>library(ggplot2)
+ggplot(data.frame(EVS_UK), aes(x=education)) +
+  geom_bar()</code></pre>
+<p><img src="../descriptive_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre><code>Additional training</code></pre>
+<pre><code>Adjust the width of the bars using the width function, change the appearance 
+of the axes by giving labels. Give a title to your graph.</code></pre>
+<p><strong>Note:</strong> <a href="https://rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf">RStudio Base cheatsheet</a></p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="../index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="../images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="../js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

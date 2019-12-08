@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<title>Regression Analysis - POL2045</title>
+<meta property="og:title" content="Regression Analysis - POL2045">
+
+
+  <link href='../favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="../css/fonts.css" media="all">
+<link rel="stylesheet" href="../css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="../" class="nav-logo">
+    <img src="../images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="../quantspolscience/">1. Quantitative Political Science</a></li>
+    
+    <li><a href="../descriptive/">2. Descriptive Statistics</a></li>
+    
+    <li><a href="../climit/">3. Central limit theorem</a></li>
+    
+    <li><a href="../ttest/">4. Bivariate analysis</a></li>
+    
+    <li><a href="../graphs/">5. Graphs</a></li>
+    
+    <li><a href="../regression/">6. Regression Analysis</a></li>
+    
+    <li><a href="../mregression/">7. Multivariate Regression Analysis</a></li>
+    
+    <li><a href="../binary/">8. Binary Regression Analysis</a></li>
+    
+    <li><a href="../interaction/">9. Interaction Terms</a></li>
+    
+    <li><a href="../about/">Useful resources</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+
+    <h1 class="article-title">Regression Analysis</h1>
+
+    
+
+    <div class="article-content">
+      
+
+
+<div id="introduction-to-regression-analysis" class="section level1">
+<h1>Introduction to regression analysis</h1>
+<p>As always, start by opening a new script file, give to your file a “<em>good name</em>” and save it in our folder (POL2045). Remove everything from RStudio’s memory and set your working directory</p>
+<pre class="r"><code>rm(list=ls())
+setwd(&quot;~POL2045&quot;)</code></pre>
+<p>Today we will learn how to produce a regression model, to do so, we will use a dataset produced by Pippa Norris. The dataset is called “DEMOCRACY CROSS-NATIONAL DATA”, and you may find it on our module’s website on SurreyLearn.</p>
+<p>Download the data in stata format (.dta) of the dataset and the respective codebook in the folder entitled POL2045 and import the dataset on RStudio using the <code>haven</code> package and the <code>read_dta</code> function.</p>
+<p>As you see there are almost a thousand variables included in the dataset mesuring social, economic, and political characteristics of 193 nations.</p>
+<p>Let’s start by exploring our dataset</p>
+<pre class="r"><code>head(Democracy)</code></pre>
+<p>As you can see there are many variables included in the dataset. We will only use two variables measuring the level of democracy in 1984 and the second one GDP Per Capita during the same year.</p>
+<p>Since we are not using the whole dataset we will create a subset of the main dataset. The subset will include only the two varaibles we will use in our analysis. We will name our new dataset “<em>GDP_Dem</em>”. To do so we use the <code>subset()</code> function along with the <code>c()</code> function.</p>
+<p>Our new dataset consists of two variables only: Dem_Gov1984 and GDPPC1984.</p>
+<p>We may summarise our variables by using the <code>summary()</code> function. To save time I will ask RStudio to provide a summary of our dataset since the dataset only consists of the two varaibles we are interested in. You may see that we have a few NA’s in the dataset and that they are both continuous variables.</p>
+<div id="pearsons-r" class="section level3">
+<h3>Pearson’s r</h3>
+<p>We will start by calculating Pearson’s r to examine the strenght of the association between the two variables. We observe that the correlation coefficient is equal to ca. <span class="math inline">\(0.52\)</span> that indicates a positive and not very strong statistical relationship between the two variables.</p>
+<pre class="r"><code>cor(GDP_Dem, use=&quot;complete.obs&quot;) # remember that we have NA&#39;s in our dataset</code></pre>
+<pre><code>##             Dem_Gov1984 GDPPC1984
+## Dem_Gov1984   1.0000000 0.5198087
+## GDPPC1984     0.5198087 1.0000000</code></pre>
+<p>We may also draw a scatterplot to examine this relationship. To plot our scatterplot we will use the <code>ggplot2</code> package.</p>
+<pre class="r"><code>library(ggplot2)
+plot.1&lt;-ggplot(GDP_Dem, aes(x=Dem_Gov1984, y=GDPPC1984)) +geom_point(size=3,colour=&quot;red&quot;) +
+    theme_classic()+
+  labs(x=&quot;Democratic Governance&quot;, y=&quot;GDP Per Capita&quot;)
+plot.1</code></pre>
+<p><img src="../regression_files/figure-html/scatterplot-1.png" width="672" /></p>
+<p>By calculating the correlation coefficient we learned that there is a positive and medium range association between Democracy and GDP Per Capita. The scatterplot helped us visualise this relationship, we observe that there is a positive and linear relationship between the two variables.</p>
+</div>
+<div id="bivariate-regression-analysis" class="section level2">
+<h2>Bivariate regression analysis</h2>
+<p>To examine how the one variable affects the other , what changes it triggers, we will run a regression analysis. We will use the <code>lm()</code> function.</p>
+<p>The two main arguments of the <code>lm()</code> function are outlined below:</p>
+<table>
+<colgroup>
+<col width="26%" />
+<col width="73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>formula</strong></td>
+<td>A mathematical description of the model, y ~ x<sub>1</sub>+x<sub>2</sub>+x<sub>3</sub>+… or DV~IV<sub>1</sub>+IV<sub>2</sub>+IV<sub>3</sub></td>
+</tr>
+<tr class="even">
+<td><strong>data</strong></td>
+<td>The name of the dataset we would like to use, the dataset that contains the variables we are interested in.</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>model.1 &lt;- lm(Dem_Gov1984~GDPPC1984, data=GDP_Dem)</code></pre>
+<p>The <code>lm()</code> function calculated the relationship between Democracy and GDP Per Capita, in RStudio language our formula is an object and we can give it a name. We named our model <code>model.1</code>. By giving a name to an object we can easily calculate further quantities and plot our results.</p>
+<p>Let’s start by examing the outcome of the regression analysis. We can see how our model looks like by using the <code>summary()</code> function.</p>
+<pre class="r"><code>summary(model.1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Dem_Gov1984 ~ GDPPC1984, data = GDP_Dem)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -104.470  -16.507   -6.817   16.879   53.869 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 1.924e+01  3.777e+00   5.094 1.70e-06 ***
+## GDPPC1984   1.519e-03  2.522e-04   6.024 2.99e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 27.76 on 98 degrees of freedom
+##   (95 observations deleted due to missingness)
+## Multiple R-squared:  0.2702, Adjusted R-squared:  0.2628 
+## F-statistic: 36.28 on 1 and 98 DF,  p-value: 2.987e-08</code></pre>
+<p><strong>Note:</strong> To disable scientific notation in R, in other words to display regular numbers instead of using the e+10-like notation, run the function below to disable it.
+<code>options(scipen = 999)</code></p>
+</div>
+<div id="interpreting-the-regression-output" class="section level2">
+<h2>Interpreting the Regression Output</h2>
+<p>Let’s start by having a look at the formula:</p>
+<pre><code>lm(formula = Dem_Gov1984 ~ GDPPC1984, data = GDP_Dem)</code></pre>
+<p>
+<span style="color:red;"> Dem_Gov1984 </span>: is our <strong>dependent variable</strong>
+</p>
+<p>
+<p><span style="color:red;"> GDPPC1984 </span> : is our <strong>independent variable</strong></p>
+<pre><code>Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -104.470  -16.507   -6.817   16.879   53.869 </code></pre>
+<p>
+<p><span style="color:red;"> Residuals </span>: The difference between the observed values and the predicted values of GDPPC1984.</p>
+<pre><code>Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 1.924e+01  3.777e+00   5.094 1.70e-06 ***
+GDPPC1984   1.519e-03  2.522e-04   6.024 2.99e-08 ***</code></pre>
+<p>This part of the output describes the coefficients for the intercept and the independent variables.</p>
+<p>Remember the general formula: Y=a+bx+e</p>
+<p>We can re-write the formula using the coefficients to describe the relationship between Dem_Gov1984 and GDPPC1984.</p>
+<center>
+<p>
+<span style="color:red;"> Dem_Gov1984 = 1.92 + (1.51 * GDPPC1984) </span>
+</center>
+<p>This tells us that <strong>for each unit increase</strong> in the variable <strong>Dem_Gov1984</strong>, <strong>GDPPC1984 increases by 1.51</strong></p>
+<p>The <span style="color:red;">standard error</span> estimates the standard deviation of the sampling distribution of the coefficients in our model.</p>
+<p>The <span style="color:red;">t statistic </span>, is used to conduct hypothesis tests on the regression coefficients. The t-test is obtained by dividing the coefficients by the standard error.</p>
+<pre><code>Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</code></pre>
+<p>The <span style="color:red;">p-value </span> for each of the coefficients included in the model. According to the null hypothesis the value of the coefficient we are interested in is zero. Remember that hypothesis testing is based on the null hypothesis, the p-value will tell us whether we can reject or not the null hypothesis.</p>
+<pre><code>R-squared:  0.2702, Adjusted R-squared:  0.2628 </code></pre>
+<p>The <span style="color:red;"> R-squared </span> and adjusted <span style="color:red;"> R-squared</span> tell us how much of the variance in our model is accounted for by the independent variable.</p>
+<p>The <span style="color:red;"> adjusted R-squared </span> is a modified version of R-squared that has been adjusted for the number of predictors in the model.</p>
+<div id="visualising-the-relationship" class="section level3">
+<h3>Visualising the relationship</h3>
+<p>Let’s plot the elationship between the two variables, dependent and independent, but this time we will include the regression line.</p>
+<pre class="r"><code>plot.2&lt;-ggplot(GDP_Dem, aes(x=GDPPC1984, y=Dem_Gov1984)) +geom_point(size=3) +
+stat_smooth(method = &quot;lm&quot;, col = &quot;red&quot;)+
+theme_classic()+
+scale_x_continuous(breaks = seq(0, 75000, by = 5000))+
+scale_y_continuous(breaks = seq(0, 200, by = 10))+
+labs(x=&quot;Democratic Governance&quot;, y=&quot;GDP Per Capita&quot;)
+plot.2</code></pre>
+<pre><code>## Warning: Removed 95 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>## Warning: Removed 95 rows containing missing values (geom_point).</code></pre>
+<p><img src="../regression_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>The graph replicates the table, when our independent variable is equal to zero, then the starting point of the line (the Y axis) is predicted to be approximately 20, the same as in our table (19.24).</p>
+<p>By looking at the regression line we should also observe that the position of the line matches the coefficients we estimated, and reported in our table. The coeeficient for the variable describing GDP per Capita <code>GDPPC1984</code> is 0.001519. The line seems to reflect this. First of all, the direction of the line imply that there is a positive relationship between the dependent and the independent variable. Indeed, the positive sign of the coefficient represents this positive relationship between the two variables. In other words, higher levels of GDP per Capita are associated with higher levels of Democracy. For each additional unit of GDP per Capita, Democratic Governance increases by 0.001519.</p>
+</div>
+</div>
+</div>
+<div id="an-additional-package-to-produce-professional-regression-outputs" class="section level1">
+<h1>An additional package to produce professional regression outputs</h1>
+<p>R can make complicated things easy and the package below will save you a lot of time. In your assignments you should have tables similar to the ones you see in official reports and journal publications. The <code>stargazer</code> package will allow to do this without having to update your table multiple times.</p>
+<pre class="r"><code>library(stargazer)
+
+stargazer(model.1,
+type=&quot;html&quot;,
+out=&quot;model_one.doc&quot;)</code></pre>
+<p><strong>Note</strong>: If you are using LATEX instead of Word you don’t have to specify the type and the output (out).</p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="../index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="../images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="../js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

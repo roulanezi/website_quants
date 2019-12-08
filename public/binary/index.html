@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<title>Binary Dependent Variable - POL2045</title>
+<meta property="og:title" content="Binary Dependent Variable - POL2045">
+
+
+  <link href='../favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="../css/fonts.css" media="all">
+<link rel="stylesheet" href="../css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="../" class="nav-logo">
+    <img src="../images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="../quantspolscience/">1. Quantitative Political Science</a></li>
+    
+    <li><a href="../descriptive/">2. Descriptive Statistics</a></li>
+    
+    <li><a href="../climit/">3. Central limit theorem</a></li>
+    
+    <li><a href="../ttest/">4. Bivariate analysis</a></li>
+    
+    <li><a href="../graphs/">5. Graphs</a></li>
+    
+    <li><a href="../regression/">6. Regression Analysis</a></li>
+    
+    <li><a href="../mregression/">7. Multivariate Regression Analysis</a></li>
+    
+    <li><a href="../binary/">8. Binary Regression Analysis</a></li>
+    
+    <li><a href="../interaction/">9. Interaction Terms</a></li>
+    
+    <li><a href="../about/">Useful resources</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+
+    <h1 class="article-title">Binary Dependent Variable</h1>
+
+    
+
+    <div class="article-content">
+      
+
+
+<div id="loading-the-data" class="section level2">
+<h2>Loading the data</h2>
+<p>For this section we will be using data from the British Election Stystem survey to investigate the effect of perceptions about the economy on party choice. This is part of a broader research examining the effect of political issues on party choice and especialy on the effect of the economy on the party in government.</p>
+<p><a href="https://s3.amazonaws.com/academia.edu.documents/6179351/s4._economic_voting_an_introduction__lewis-beck_paldam_2000_.pdf?response-content-disposition=inline%3B%20filename%3DEconomic_Voting_An_Introduction.pdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWOWYYGZ2Y53UL3A%2F20191129%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20191129T110058Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=8a2e30564a1772df23b48cce3f6f246e4582a99d72fb75b66269b96060ff59bd"> Lewis-Beck, Michael S., and Martin Paldam. “Economic voting: an introduction.” Electoral studies 19.2-3 (2000): 113-121.</a></p>
+<pre class="r"><code>load(&quot;bes.RData&quot;)</code></pre>
+<p>We will analyse data from the 2017 general election, and we will test whether citizens’ who feel that the economy is doing better will support the party in government.</p>
+<p>We can download the full dataset from the website below:</p>
+<p><a href="https://www.britishelectionstudy.com/data-objects/cross-sectional-data/"> British Election Study</a></p>
+<p>We should download the post-election study entitled: 2017 Face-to-face Post-election Survey Version 1.3</p>
+<p>We will use the following variables from the dataset:</p>
+<table>
+<colgroup>
+<col width="8%" />
+<col width="91%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description (name in the dataset in parenthesis)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>incumbent</strong></td>
+<td>(1) The respondent will vote for the party in government (0) will vote for another party (b02)</td>
+</tr>
+<tr class="even">
+<td><strong>left-right</strong></td>
+<td>position on the left- right spectrum (e01)</td>
+</tr>
+<tr class="odd">
+<td><strong>egocentric_retro</strong></td>
+<td>retrospective evaluation of personal finances (l01)</td>
+</tr>
+<tr class="even">
+<td><strong>egocentric_pros</strong></td>
+<td>prospective evaluation of personal finances (l02)</td>
+</tr>
+<tr class="odd">
+<td><strong>sociotropic_retro</strong></td>
+<td>retrospective evaluation of UK’s economy (l04)</td>
+</tr>
+<tr class="even">
+<td><strong>sociotropic_pros</strong></td>
+<td>prospective evaluation of UK’s economy (l03)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="create-a-subset" class="section level2">
+<h2>Create a subset</h2>
+<p>Our next step is to create a sub-set including only the variables we will include in our analysis</p>
+<pre class="r"><code>library(dplyr)
+eco_voting&lt;-bes %&gt;%select(b02,Age,edlevel,e01,l01,l02,l03,l04,p01)
+View(eco_voting)</code></pre>
+<p><strong>Note</strong>: If you use RStudio, you can type the pipe (<span class="math inline">\(%&gt;%\)</span>) with <strong>Ctrl + Shift + M</strong> if you have a <strong>PC</strong> or <strong>Cmd + Shift + M</strong> if you have a <strong>Mac</strong>.
+## Assign missing cases</p>
+<p>Our next step is to replace the negative values (-1, -2) to NAs</p>
+<pre class="r"><code>eco_voting[eco_voting &lt;=-1] &lt;- NA
+eco_voting[eco_voting &lt;=-2] &lt;- NA</code></pre>
+</div>
+<div id="create-the-dependent-variable" class="section level2">
+<h2>Create the dependent variable</h2>
+<p>Our dependent variable is a dichotomous, dummy variable where <span class="math inline">\(1\)</span> means that the respondent voted for the party in government - this is what we are trying to explain- and <span class="math inline">\(0\)</span> means that they voted for another party.</p>
+<pre class="r"><code>eco_voting&lt;-eco_voting %&gt;% mutate(incumbent=case_when(b02==2~1, b02==1~0, b02&gt;=3~0)) </code></pre>
+<p>You may use the <code>table()</code> function to double check the new variable entitled `incumbent’:</p>
+<pre class="r"><code>table(eco_voting$b02)</code></pre>
+<pre><code>## 
+##   0   1   2   3   4   5   6   7 
+##   2 457 347  48  49   1  19  21</code></pre>
+<pre class="r"><code>table(eco_voting$incumbent)</code></pre>
+<pre><code>## 
+##   0   1 
+## 595 347</code></pre>
+</div>
+<div id="rename-your-independent-variables" class="section level2">
+<h2>Rename your independent variables</h2>
+<p>We will use the <code>rename()</code> function part of <code>dplyr</code>:</p>
+<pre class="r"><code>eco_voting&lt;-eco_voting %&gt;% rename(left_right=e01, egocentric_retro=l01,egocentric_pros=l02,sociotropic_pros=l03,sociotropic_retro=l04,brexit=p01)
+
+View(eco_voting)</code></pre>
+</div>
+<div id="logistic-regression-model" class="section level2">
+<h2>Logistic Regression Model</h2>
+<p>We will use the generalized linear model function <code>glm()</code> to estimate a logistic regression-remember that we have a dummy dependent variable. The function is very similar to the <code>lm()</code> function- the only difference is that there is an additional argument called <code>family()</code>. The <code>family()</code> function will tell R that we want to estimate a logistic regression.</p>
+<p>Let’s see it in practice, all we have to do is to include the following line in the <code>glm()</code> function:</p>
+<pre><code>family = binomial(link = &quot;logit&quot;) argument</code></pre>
+<pre class="r"><code>logit.model&lt;-glm(incumbent~ sociotropic_pros+egocentric_retro+left_right, data=eco_voting,family = binomial(link = &quot;logit&quot;))
+summary(logit.model)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = incumbent ~ sociotropic_pros + egocentric_retro + 
+##     left_right, family = binomial(link = &quot;logit&quot;), data = eco_voting)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.7153  -0.7594  -0.3541   0.7221   2.9429  
+## 
+## Coefficients:
+##                  Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)      -5.88946    0.49714 -11.847  &lt; 2e-16 ***
+## sociotropic_pros  0.29030    0.10063   2.885  0.00392 ** 
+## egocentric_retro  0.23379    0.10793   2.166  0.03030 *  
+## left_right        0.79782    0.06612  12.067  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1042.32  on 793  degrees of freedom
+## Residual deviance:  742.53  on 790  degrees of freedom
+##   (479 observations deleted due to missingness)
+## AIC: 750.53
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<p>Interpreting the results of a logistic regression model is not the same as the interpretation of the linear model. Remember that for the linear model the coefficient describe the effect of a unit change (increase or decrease) in X on Y.</p>
+<p>For the logistic regression the interpretation of the coefficient is: a one unit change (increase or decrease) in X is associated with a <span class="math inline">\(\hat{\beta}\)</span> change in the log-odds of the dependent variable (Y), holding all other variables constant.</p>
+<p>For example, the coefficient describing perceptions about the economy <code>sociotropic_pros</code> is equal to <span class="math inline">\(0.047\)</span>, implying that the log-odds of voting for the party in government are <span class="math inline">\(0.047\)</span> higher when the respondent believe that the economy is doing well, holding all other variables constant.</p>
+</div>
+<div id="predicted-probabilities" class="section level2">
+<h2>Predicted probabilities</h2>
+<p>As you may already realised log-odds are not straight-forward, this is why we use the <code>predict()</code> function which give us predictions for Y, the dependent variable.</p>
+<pre class="r"><code>probabilities&lt;-predict(logit.model,type = &quot;response&quot;)</code></pre>
+</div>
+<div id="the-effects-package" class="section level2">
+<h2>The effects package</h2>
+<p>The final section include’s the use of the <code>effects</code> package developed by Fox, et al. The <code>effects</code> package creates plots for various statistical models. In this example I will show you how it works with a logistic model- but it works with linear models, mixed effects models and many other.</p>
+<p>First you have to install the <code>effects</code> package. The easiest way to visualise your model is by using the <code>allEffects()</code> function in combination with the <code>plot()</code> function.</p>
+<pre class="r"><code>library(effects)</code></pre>
+<pre><code>## Loading required package: carData</code></pre>
+<pre><code>## lattice theme set by effectsTheme()
+## See ?effectsTheme for details.</code></pre>
+<pre class="r"><code>plot(allEffects(logit.model))</code></pre>
+<p><img src="../binary_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><strong>References</strong></p>
+<p>Fox, J. (2003) Effect displays in R for generalised linear models. Journal of Statistical Software 8:15, 1–27, <a href="http://www.jstatsoft.org/v08/i15/" class="uri">http://www.jstatsoft.org/v08/i15/</a>.</p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="../index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="../images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="../js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<title>T-test for difference in Means - POL2045</title>
+<meta property="og:title" content="T-test for difference in Means - POL2045">
+
+
+  <link href='../favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="../css/fonts.css" media="all">
+<link rel="stylesheet" href="../css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="../" class="nav-logo">
+    <img src="../images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="../quantspolscience/">1. Quantitative Political Science</a></li>
+    
+    <li><a href="../descriptive/">2. Descriptive Statistics</a></li>
+    
+    <li><a href="../climit/">3. Central limit theorem</a></li>
+    
+    <li><a href="../ttest/">4. Bivariate analysis</a></li>
+    
+    <li><a href="../graphs/">5. Graphs</a></li>
+    
+    <li><a href="../regression/">6. Regression Analysis</a></li>
+    
+    <li><a href="../mregression/">7. Multivariate Regression Analysis</a></li>
+    
+    <li><a href="../binary/">8. Binary Regression Analysis</a></li>
+    
+    <li><a href="../interaction/">9. Interaction Terms</a></li>
+    
+    <li><a href="../about/">Useful resources</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+
+    <h1 class="article-title">T-test for difference in Means</h1>
+
+    
+
+    <div class="article-content">
+      
+
+
+<div id="t--test" class="section level1">
+<h1>T- test</h1>
+<p>This time we will use a dataset named <code>midwest</code>. Download the dataset from SurreyLearn and load it into RStudio. To load our file we use the <code>load()</code> function. Give a name to your dataset using the assigment operator <code>&lt;-</code>.</p>
+<p>Let’s have a look at the dataset. Alternatively, you can have a look at the codebook- that is the document that comes with the dataset. The codebook describes the contents, structure, and layout of a data collection but it also provides a detailed overview of all variables included in the dataset.</p>
+<p>We will explore our dataset, by using the <code>head()</code> and <code>View()</code> functions.</p>
+<p>The <code>head()</code> function shows us the head, the first rows, of our dataset.</p>
+<p>The <code>view()</code> function allows us to see inside the data frames. At the view window you can also sort the dataset by any column simply by clicking on the column.</p>
+<p>Let’s start by examining the <strong>one paired t-test</strong>. That means that we will compare the mean of our sample against a known true value. To be more specific, we will calculate the percent of educated adults in the midwest, against a known value the percent of educated adults nationwide. Our overall aim is to examine whether the mean of educated adults in the midwest is significantly different to the national average. That means it could be higher or smaller.</p>
+<p>According to official statistics, the percentage of college educated adults is <span class="math inline">\(32%\)</span>, our aim is to examine if in the midwest the average of college educated adults is statistically different to <span class="math inline">\(32%\)</span>.</p>
+<p>A boxplot can give us a quick visual assessment of the data, a brief idea about what is going on in our data before we perform the t-test.</p>
+<p>To do so we will use a very useful package in R, called <code>ggplot2</code>.</p>
+<p>We first have to install ggplot2 by using the <code>install.packages(&quot;ggplot2&quot;)</code> function:</p>
+<pre class="r"><code>plot1 &lt;- ggplot(midwest, aes(percollege)) + 
+        geom_histogram() + theme_classic()
+
+plot1 </code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="../ttest_files/figure-html/plot1-1.png" width="672" /></p>
+<div id="one-tailed-t-test" class="section level2">
+<h2>One-tailed t-test</h2>
+<p>Our next step is to perform the one-tailed t-test. Taking into consideration the states that are part of the Midwest, we hypothesise that on average the percentage of educated adults will be smaller than the average.</p>
+<pre class="r"><code>t.test(midwest$percollege, mu = 32, alternative = &quot;less&quot;)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  midwest$percollege
+## t = -45.827, df = 436, p-value &lt; 2.2e-16
+## alternative hypothesis: true mean is less than 32
+## 95 percent confidence interval:
+##     -Inf 18.7665
+## sample estimates:
+## mean of x 
+##  18.27274</code></pre>
+<p><strong>Note</strong>: 2.2e-16 is 2.2 x 10-16 which is 0.00000000000000022</p>
+<p>## Two tailed t-test</p>
+<p>Our next step is to compare the difference between two different states. In other words, our next step is to compare whether the two means, representing two different groups, are statistically different. This is called two sample t-test.</p>
+<p>Before we start, install a package called <code>dplyr</code> and use the <code>library()</code> function to load it in RStudio.</p>
+<div id="create-the-two-groups" class="section level3">
+<h3>Create the two groups</h3>
+<p>We start by creating the two groups:</p>
+<pre class="r"><code>library(dplyr)
+data.frame1 &lt;- midwest %&gt;%
+        filter(state == &quot;IN&quot; | state == &quot;IL&quot;) %&gt;%
+        select(state, percollege)</code></pre>
+<p>We can examine the distribution of our two groups with a box-plot:</p>
+<pre class="r"><code>ggplot(data.frame1, aes(state, percollege)) +
+        geom_boxplot() +
+  labs(title = &quot;Two paired t-test&quot;,
+       y=&quot;Education&quot;,
+       x=&quot;State&quot;) +
+  theme_classic()</code></pre>
+<p><img src="../ttest_files/figure-html/midwest%20boxplot-1.png" width="672" /></p>
+<p>Our next step is to compare the two means:</p>
+<pre class="r"><code>t.test(percollege ~ state, data = data.frame1)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  percollege by state
+## t = 2.4947, df = 191.61, p-value = 0.01345
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.4533698 3.8774354
+## sample estimates:
+## mean in group IL mean in group IN 
+##         18.78814         16.62274</code></pre>
+<p>The results of the analysis suggest that the <code>p&lt; 0.05</code> is supporting the alternative hypothesis that the true difference in means is not equal to zero. What that really means is that there is a statistical difference between the two means.</p>
+</div>
+</div>
+<div id="correlations" class="section level2">
+<h2>Correlations</h2>
+<p>If we want to examine the relationship between two continuous variables then calculate the correlation coefficient commonly known as Pearson’s r. The correlation coefficient ranges from <span class="math inline">\(-1\)</span> to <span class="math inline">\(1\)</span> where <span class="math inline">\(-1\)</span> indicates a perfect negative relationship between the two variables and <span class="math inline">\(1\)</span> a perfect positive relationship.
+We calculate the correlation coefficient by using the <code>cor()</code> function.</p>
+<p>For example, load the <code>EVS_UK</code> dataset. We will examine the relationship between peoples’ attitudes towards EU (v198) and attitudes towards immigration (v185). The interpretation of the results depends upon the direction of the values. In our case our two continuous variables range from <span class="math inline">\(0\)</span> to <span class="math inline">\(10\)</span>, for v198 <span class="math inline">\(0\)</span> means that the responder is against the enlargement of the EU and 10 in favour. For v185, <span class="math inline">\(0\)</span> means that the responder believe that immigrants do not take away jobs while <span class="math inline">\(10\)</span> means that they do take jobs away.</p>
+<pre class="r"><code>load(&quot;EVS_UK.RData&quot;)
+cor(y=EVS_UK$v198, x=EVS_UK$v185, use=&quot;complete.obs&quot;)</code></pre>
+<pre><code>## [1] -0.2465359</code></pre>
+<p>Our coefficient is equal to <span class="math inline">\(-0.24\)</span>, the <span class="math inline">\(-\)</span> sign indicates that there is a negative correlation between the two variables. A negative correlation means that there is an inverse relationship between two variables - when one variable decreases, the other increases. In other words, higher values of one variable tend to be associated with lower values of the second variable.</p>
+<p>The opposite is a positive correlation, when one variable decreases as the other variable decreases, or one variable increases while the other increases.</p>
+<p>You may visualise the relationship between two variables by creating a <em>correlogram</em>:</p>
+<p>We start by creating a <em>subset</em> of our dataset, our subset will include the two variables we are interested in, v198 and v185, and few more variables measuring attitudes towards immigration v184, v186, and v187.</p>
+<pre class="r"><code>evs_subset &lt;- c(&quot;v198&quot;, &quot;v184&quot;, &quot;v185&quot;, &quot;v186&quot;, &quot;v187&quot;)
+euimmi.sample &lt;- EVS_UK[evs_subset]
+View(euimmi.sample)</code></pre>
+<p>let’s confirm that all of our variables are numeric i.e. continuous</p>
+<pre class="r"><code>class(EVS_UK$v198)</code></pre>
+<pre><code>## [1] &quot;haven_labelled&quot;</code></pre>
+<pre class="r"><code>class(EVS_UK$v185)</code></pre>
+<pre><code>## [1] &quot;haven_labelled&quot;</code></pre>
+<pre class="r"><code>class(EVS_UK$v186)</code></pre>
+<pre><code>## [1] &quot;haven_labelled&quot;</code></pre>
+<pre class="r"><code>class(EVS_UK$v187)</code></pre>
+<pre><code>## [1] &quot;haven_labelled&quot;</code></pre>
+<pre class="r"><code>EVS_UK$v198&lt;-as.numeric(EVS_UK$v198)
+EVS_UK$v185&lt;-as.numeric(EVS_UK$v185)
+EVS_UK$v186&lt;-as.numeric(EVS_UK$v186)
+EVS_UK$v187&lt;-as.numeric(EVS_UK$v187)</code></pre>
+<div id="visualising-correlations" class="section level3">
+<h3>Visualising correlations</h3>
+<p>Don’t forget to install the package we will use by using the <code>install.packages()</code> function:
+<code>install.packages(&quot;corrgram&quot;)</code></p>
+<pre class="r"><code>library(corrgram)</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;seriation&#39;:
+##   method         from 
+##   reorder.hclust gclus</code></pre>
+<pre class="r"><code>corrgram(euimmi.sample, order=NULL, lower.panel=panel.shade,
+  upper.panel=NULL, text.panel=panel.txt,
+  main=&quot;EU enlargement and attitudes \n towards immigration&quot;)</code></pre>
+<p><img src="../ttest_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="../index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="../images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="../js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
