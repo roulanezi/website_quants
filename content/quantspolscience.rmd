@@ -1,0 +1,293 @@
+---
+title: "Quantitative Political Science"
+output: html_document
+df_print: paged
+---
+
+# Basic Steps
+
+
+Install R and RStudio on your computer by visiting the [Surrey App Store](https://appstore.surrey.ac.uk/login) and logging in using your university account details. You may find additional information on how to install R and RStudio on your personal computer on SurreyLearn.
+
+
+When you start RStudio for the first time you will see three panes:
+
+
+![The three panes you see the first time you start RStudio](/./quantspolscience_files/RStudio1.PNG){width=98%}
+
+Let's see what each one these windows is doing. You can type some code at the Console window and when you press **ENTER** the software will run (execute) that code. Typically, you will see some output in the Console, as the results from your analysis, but sometimes you might also get a warning message or an error message. Don't worry if you get an error message <span style="color:red"> **(typically they appear in red colour)** </span>, nothing will happen! 
+
+
+Let's see how the Console is working by calculating some simple maths to familiarise ourselves with RStudio. 
+
+```{r addition, message=FALSE, warning=FALSE, paged.print=FALSE}
+5+5
+
+```
+
+Basic mathematical operations
+
+now let's try to do the same by using some mathematical operations such as subtraction ( - ), division ( / ), and multiplication ( * ).
+
+
+**Subtraction**
+```{r subtraction, message=FALSE, warning=FALSE, paged.print=FALSE}
+5-3
+```
+
+**Division**
+```{r Division, message=FALSE, warning=FALSE, paged.print=FALSE}
+10/6
+```
+
+**Multiplication**
+```{r Multiplication, message=FALSE, warning=FALSE, paged.print=FALSE}
+7*5
+```
+
+
+
+You can edit your code in the console by using the arrow keys on your keyboard. The **UP** and **DOWN** keys will re-run your code without typing it again. You may edit your code by using the **LEFT** and/or the **RIGHT** keys
+
+```
+Additional training
+```
+
+```
+Calculate the square root of 25, and assign a name to the mathematical expression
+```
+**Note:** [RStudio Base cheatsheet](https://rstudio.com/wp-content/uploads/2016/06/r-cheat-sheet.pdf)
+</div>
+
+
+# Vectors 
+
+
+A vector is a collection of elements, a basic data structure. Vectors are crucial in RStudio. The data types contained by a vector could be logical, integer, or  character. 
+</br>
+
+To create a vector in R you should use a very useful function, the `c()` function. The c stands for **c**ombine, because multiple elements are combined into a vector.
+
+```{r vector, message=FALSE, warning=FALSE, paged.print=FALSE}
+x <-c(1,2,3,4,5,6,7,8,9,10)
+```
+
+
+```{r x, message=FALSE, warning=FALSE, paged.print=FALSE}
+x
+```
+
+An important property of vectors is their length 
+
+```{r length, message=FALSE, warning=FALSE, paged.print=FALSE}
+length(x)
+```
+
+
+Additionally, you may create a vector using the `seq()` function. The seq() function generates a sequence of numbers. For example is you want to generate a sequence of numbers from 0 to 30 incremented by 3 you write
+
+```{r seq, message=FALSE, warning=FALSE, paged.print=FALSE}
+seq(from=0, to=30, by=3)
+```
+
+
+# Functions in RStudio
+
+What is a function? In simple words, a function is a set of instructions that you want to use. A function is a code written to carry out a specific task. For example, you want to know the sum of $1+2+3$, instead of  using the $+$ sign we can use the sum function to add numbers. For example:
+
+```{r addition2, message=FALSE, warning=FALSE, paged.print=FALSE}
+1+2+3
+```
+
+or
+
+```{r sum, message=FALSE, warning=FALSE, paged.print=FALSE}
+sum(1,2,3)
+```
+
+or
+
+```{r sum3, message=FALSE, warning=FALSE, paged.print=FALSE}
+sum(1:3)
+```
+
+
+```
+Additional training
+```
+```
+Create a vector of length 25 and calculate its mean
+```
+**Note:** [RStudio Base cheatsheet](https://rstudio.com/wp-content/uploads/2016/06/r-cheat-sheet.pdf)
+
+
+# Getting Help 
+
+Learning a new software is like learning a new language, and some functions or commands will be like unknown words. An important function in R is help. For example, if we wanted to know how exactly to use the sum function, we could type `help(sum)`. You will see the results in the right-hand panel.
+
+```{r helpsum, message=FALSE, warning=FALSE, paged.print=FALSE}
+help(sum)
+```
+
+or by using the question mark sign $?$
+
+
+```{r helpsum2, message=FALSE, warning=FALSE, paged.print=FALSE}
+?sum
+```
+![RStudio-Help](/./quantspolscience_files/Fig_14.PNG) 
+
+
+# How to use the help page
+
+All help pages, like the one shown above, follow the same structure. 
+
+
+Name   | Value
+-------|-------------------
+**Description** | A brief description of the function
+**Usage** | The complete syntax that includes all possible functions
+**Arguments** | A brief explanation of all arguments
+**Details**| Any relevant detail related to the function and its arguments
+**Value** | The output values of the function
+**Examples** | Examples of how to use the function
+
+
+# The assignment operator
+
+We now know how to use a function using the parenthesis sign $()$, but we are also interested in the output of a function.
+
+In RStudio we use the assignment operator &leftarrow; for creating or updating existing objects. If we wanted to save the results of `sum(1,2,3)`, we would have to use the assignment operator
+
+```{r mysum, message=FALSE, warning=FALSE, paged.print=FALSE}
+mysum <-sum(1:3)
+```
+
+the line above created a new object called (mysum) in our environment and saves the result of the `sum(1, 2, 3)`
+
+Now, if you look at the Environment pane in RStudio you will see **mysum**
+
+![The enviroment pane](/./quantspolscience_files/Fig_18.PNG) &nbsp;&nbsp;&nbsp;&nbsp;
+
+
+If you want to delete objects from the environment, you can use the broom button.
+
+<center>
+Now that you know how to use the assignment operator, you can give any name to your graphs, variables, datasets, literally to any object in RStudio
+</center>
+
+You may give to your objects any name you like but let's admit it, some names are just bad names... You may find below some examples of good names and bad names
+
+Avoid using names such as: 
+
+
+Good names   | Bad names
+-------|-------------------
+**my_model** | this.is.my.model
+**M1** | m
+**model1** | data, function (i.e. same name as commands )
+**model.1**| 
+
+
+
+# Scripts
+
+
+The Console is very important and useful for small tasks but if you are working on your assignment or any other project of yours you have to save your work. This is very important- first of all because you have to submit this file with your assignment, second of all because you may make a mistake and in this case you don't want to re-write everything! 
+
+Script files in R are similar to  text files. In RStudio the so-called Script files are plain text, like a notepad that contains R code. You may edit a Script as you are editing a Word or a text file.
+
+You may see below how to create a new script file:
+
+![Script files](/./quantspolscience_files/Fig_22.PNG) 
+
+
+Once you created a new Script give it a "good name", and save it. For example, you may call it seminar_1.
+
+How to run your code. There are different ways of doing so. If you want to:
+
+```
+* Run one line at a time then place the cursor on the line you want and hit CTRL+ENTER or hit the Run button at the top right side of the Console pane. 
+
+* Many lines at the same time then select the lines and hit CTRL+ENTER or use the Run button.
+
+* The entire Script, then use the Source button 
+```
+
+# Data Frames
+
+
+In RStudio a data frame is again an object, but this time an object that stores data. Is similar to a spreadsheet. As in all statistical software variables are kept in columns and observations are in rows.
+
+You may create a data frame manually if you want but living in the age of big data this is rarely the case! There are many example datasets pre-loaded in RStudio
+
+Let's have a look at one of these pre-loaded data frames. The data frame is called longley
+
+Let's see the variables included in the dataset
+
+```{r datalongley, message=FALSE, warning=FALSE, paged.print=FALSE}
+data("longley")
+```
+
+```{r viewlongley, message=FALSE, warning=FALSE, paged.print=FALSE}
+View(longley)
+```
+
+![Data frame](/./quantspolscience_files/Fig_24.PNG)
+
+If we want to see individuals columns, in other words, a specific variable in the data frame, then we use the $ sign. Let's start by observing the Unemployment column.
+
+```{r longleyvariable, message=FALSE, warning=FALSE, paged.print=FALSE}
+longley$Unemployed
+```
+
+In addition, often we want to access only certain observations (rows) or only certain variables (columns). By using the square brackets [ ] we subset the data frame. In the square brackets, we insert the coordinates for a row and a column. The row is always first followed by the column. For example, longey[7, 5] gives us the 7th row and the 5th column. If we leave the column coordinate empty then we want to see all columns longey[7, ]. If we leave the row coordinate empty then we want all columns.
+
+```{r longleyrows, message=FALSE, warning=FALSE, paged.print=FALSE}
+longley[7,5]
+```
+
+Leave the column coordinate empty to see the 7th row
+
+```{r longleyrows2, message=FALSE, warning=FALSE, paged.print=FALSE}
+longley[7, ]
+```
+
+Leave the row empty to see the 5th column
+
+```{r longleycolumns, message=FALSE, warning=FALSE, paged.print=FALSE}
+longley[ ,5]
+```
+
+We may see the first ten rows of a dataset by adding a colon in the brackets
+
+```{r longleyrows3, message=FALSE, warning=FALSE, paged.print=FALSE}
+longley[1:10, ]
+```
+
+
+
+# Plots
+
+Let's create a plot from our dataset. Let's start by creating a scatterplot with the one axis (X) representing the Year and the other (Y)axis the Gross National Product
+
+```{r longleyplots, message=FALSE, warning=FALSE, paged.print=FALSE}
+plot(longley$Year,longley$GNP)
+```
+
+to create the same plot but by using a line instead of dots we add the argument `type="l"`
+
+
+```{r longleyplotsline, message=FALSE, warning=FALSE, paged.print=FALSE}
+plot(longley$Year,longley$GNP,type = "l")
+```
+
+```
+Additional training
+```
+```
+Use the title() function, to give labels to the axes, and a title to your plot. 
+The examples in the help are particularly informative.
+```
+
+

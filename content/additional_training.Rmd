@@ -1,0 +1,34 @@
+---
+title: "Additional training"
+author: Roula Nezi
+output: html_document
+---
+
+
+## Data Manipulation
+
+This is an additional section, the aim of this section is to help you perform basic data manipulations such as recoding your variables, assigning missing cases, excluding missing cases, create new variables based on existing ones.
+
+If you haven't done so already, install `dplyr` part of `tidyverse`. 
+`install.packages("tidyverse")`
+
+**R code basics: symbols**
+
+Symbols in R are Boolean operators. Below you may find a list of the most used operators in R. They useful epsecially when we want to manipulate our dataset and/ or when we create graphs. 
+
+
+Symbol | Meaning
+-------|-------------------
+**&**| AND
+**&#124;** | OR
+**!** | NOT
+**+ -** |  add, subtract
+***/** |  multiply, divide
+**>= <=** | greater than or equal to, less than or equal to
+**!=** |  not equal to
+**==** | Object is equal to a value or test whether an object is equal to a value 
+
+**Note**: When referring to values entered as text, or to dates, put them in quote marks: "Africa", or "27-03-1980", **DO NOT quote numbers**. 
+
+
+## Data manipulation

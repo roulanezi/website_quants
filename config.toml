@@ -1,0 +1,65 @@
+baseurl = "/./"
+languageCode = "en-us"
+title = "POL2045"
+theme = "hugo-lithium"
+enableEmoji = true
+googleAnalytics = ""
+disqusShortname = ""
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+relativeurls = true
+
+[permalinks]
+    post = "/:year/:month/:day/:slug/"
+
+[[menu.main]]
+    name = "Useful resources"
+    url = "/about/"
+[[menu.main]]
+    name = "1. Quantitative Political Science"
+    url = "/quantspolscience/"
+[[menu.main]]
+    name = "2. Descriptive Statistics"
+    url = "/descriptive/"
+[[menu.main]]
+    name = "3. Central limit theorem"
+    url = "/climit/"   
+[[menu.main]]
+    name = "4. Bivariate analysis"
+    url = "/ttest/" 
+[[menu.main]]
+    name = "5. Graphs"
+    url = "/graphs/" 
+[[menu.main]]
+    name = "6. Regression Analysis"
+    url = "/regression/"   
+ [[menu.main]]
+    name = "7. Multivariate Regression Analysis"
+    url = "/mregression/"    
+[[menu.main]]
+    name = "8. Binary Regression Analysis"
+    url = "/binary/"  
+[[menu.main]]
+    name = "9. Interaction Terms"
+    url = "/interaction/"     
+    
+
+[params]
+    description = "A website for our module"
+
+    # options for highlight.js (version, additional languages, and theme)
+    highlightjsVersion = "9.12.0"
+    highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
+    highlightjsLang = ["r", "yaml"]
+    highlightjsTheme = "github"
+
+    MathJaxCDN = "//cdnjs.cloudflare.com/ajax/libs"
+    MathJaxVersion = "2.7.5"
+
+    # path to the favicon, under "static"
+    favicon = "favicon.ico"
+
+    [params.logo]
+    url = "logo.png"
+    width = 50
+    height = 50
+    alt = "Logo"

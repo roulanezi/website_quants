@@ -1,0 +1,267 @@
+---
+title: "Visual Representation of Data"
+author: "Roula Nezi"
+output: html_document
+---
+
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/plotly-binding/plotly.js"></script>
+<script src="/rmarkdown-libs/typedarray/typedarray.min.js"></script>
+<script src="/rmarkdown-libs/jquery/jquery.min.js"></script>
+<link href="/rmarkdown-libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/crosstalk/js/crosstalk.min.js"></script>
+<link href="/rmarkdown-libs/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/plotly-main/plotly-latest.min.js"></script>
+
+
+<div id="visualising-relationships" class="section level1">
+<h1>Visualising relationships</h1>
+<p>In this section we will learn how to produce graphs in RStudio! In R you can produce simple graphs like a histogram or a bar-plot or even maps and interactive graphs!</p>
+<p>Many media outlets and/or polling agencies even public institutions are using RStudio to produce graphs and reports.</p>
+<p>For example the BBC team developed the package below which is free to use if you want to create BBC style graphics!</p>
+<p><a href="https://bbc.github.io/rcookbook/">BBC Visual and Data Journalism cookbook for R graphics</a></p>
+<p>We will start by creating some simple graphs to learn the basic commands.</p>
+<div id="the-ggplot-package" class="section level2">
+<h2>The ggplot package</h2>
+<p>The most common data visualisation package in RStudio is ggplot. We may install ggplot by using the <code>install.packages()</code> function. We write <code>install.packages(&quot;ggplot2&quot;)</code> and we call the package by using the <code>library()</code> function.</p>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<p>First of all, as most packages in RStudio the ggplot team created a cheatsheet. You may find it here
+<a href="https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf">ggplot Cheatsheet</a></p>
+<p>If we call the <code>ggplot()</code> function then we will create an empty canvas.
+We start by loading our dataset entitled <strong>EVS_UK.RData</strong></p>
+<pre class="r"><code>load(&quot;EVS_UK.RData&quot;)
+ggplot(EVS_UK) # this created an empty plot</code></pre>
+<p><img src="/graphs_files/figure-html/emptyplot-1.png" width="672" /></p>
+<p>the next step is to specify the variables we would like to use, as you know we cannot plot the whole dataset!</p>
+<p>To specify which variables we would like to plot we have to include in the function the so called <strong>aes()</strong> section that specifies the <strong>aesthetic mappings</strong>, in other words, this section specifies how to map our variables.</p>
+<p>Let’s start by creating a bar to see how the <strong>aes</strong> section works - you already know how to do that but this time we will give a name to our plot.</p>
+<p>In our analysis we will use two socio-demographics variables gender and education. Gender is a dichotomous variable describing gender. Education is an ordinal variable with three levels - low, medium, and high.</p>
+<p>In the dataset the code of the variable describing gender is <code>EVS_UK$v225</code>, and the name of the variable describing education is <code>EVS_UK$v243_r_weight</code>.</p>
+<p>Before we proceed, we will give meaningful names to our variable swhile at the same time we will make sure that our new variables are categorical (<em>factor</em>) variable for gender- as it should be. We can easily do that by using the assignment operator <span class="math inline">\(&lt;-\)</span> and the <code>as.factor</code> function.</p>
+<pre class="r"><code>EVS_UK$gender&lt;- factor(EVS_UK$v225,
+               levels = c(1,2),
+               labels = c(&quot;Men&quot;, &quot;Women&quot;))
+
+table(EVS_UK$gender)</code></pre>
+<pre><code>## 
+##   Men Women 
+##   792   996</code></pre>
+<p><strong>Note</strong>: at the left side of the equation I specified the dataset at which my new variable belongs to - that is <code>EVS_UK</code>.</p>
+<p>We will do the same for the variable describing education and is currently named <code>v243_r_weight</code>.</p>
+<p>Recall, Lecture 2 (Descriptive Statistics) during the lab session we used the same function to rename <code>v243_r_weight</code>to <code>education</code>.</p>
+<p>In this example education is an ordinal variable with three levels- low, medium, high.</p>
+<pre class="r"><code>EVS_UK$education &lt;- ordered(EVS_UK$v243_r_weight, #here you specify that this is ordered variable
+levels = c(1,2,3), # here you specify the values of the variable
+labels = c(&quot;Low&quot;, &quot;Medium&quot;, &quot;High&quot;))  #here you specify the names of the values</code></pre>
+<p><strong>TIP: Assignment operator shortcut</strong></p>
+<pre><code>Windows: &quot;Alt&quot; + &quot;-&quot;
+Mac: &quot;Option&quot; + &quot;-&quot;</code></pre>
+</div>
+<div id="graphs-for-categorical-variables" class="section level2">
+<h2>Graphs for categorical variables</h2>
+<p>Below you will find some examples of graphs for categorical variables. Of course there are many more graphs available to help you visualise your hypothesis and research question.</p>
+<div id="bar-plots" class="section level3">
+<h3>Bar Plots</h3>
+<p>Let’s use this minimal example to see how ggplot works.</p>
+<pre class="r"><code>plot1&lt;-ggplot(EVS_UK, aes(x = gender)) +
+  geom_bar() +
+  theme_classic()
+
+plot1   # You can&#39;t view the plot unless you call it </code></pre>
+<p><img src="/graphs_files/figure-html/ggplot%20bar-1.png" width="672" /></p>
+<p>Our first step is to give meaningful names to the values of our variable (gender). In our dataset <span class="math inline">\(1\)</span> represents men and <span class="math inline">\(2\)</span> women.</p>
+<pre class="r"><code>plot1&lt;-plot1 + scale_x_discrete(breaks=c(&quot;1&quot;, &quot;2&quot;),
+                      labels=c(&quot;Men&quot;, &quot;Women&quot;))
+plot1</code></pre>
+<p><img src="/graphs_files/figure-html/ticks-1.png" width="672" /></p>
+<p>Let’s give labels to our axes, again we call our plot, <code>plot1</code> and by using the <span class="math inline">\(+\)</span> sign we call the <code>labs</code> function, part of ggplot.</p>
+<pre class="r"><code>plot1&lt;- plot1 +labs( y=&quot;Number of cases&quot;, x = &quot;Responder&#39;s gender&quot;)</code></pre>
+<p>Additionaly we may create a barplot describing two variables gender and educational level. We build upon the exisitng graph <code>plot1</code>:</p>
+<pre class="r"><code>plot1&lt;-plot1 + geom_bar(aes(fill = education))
+plot1</code></pre>
+<p><img src="/graphs_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>We can move the position of the legend:</p>
+<pre class="r"><code>plot1 + theme(legend.position=&quot;top&quot;)</code></pre>
+<p><img src="/graphs_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Or, we may position the legend in the graph:</p>
+<pre class="r"><code>plot1&lt;-plot1 + theme(legend.position = c(0.25, 0.9),
+          legend.direction = &quot;horizontal&quot;) 
+plot1 </code></pre>
+<p><img src="/graphs_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>As you may have noticed typically I am using a white background for my graphs. We may change the background by using different backgound themes. The most commonly used themes are the following:</p>
+<table>
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th align="center">Theme</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>theme_gray()</td>
+<td align="center">Grey background and white gridlines</td>
+</tr>
+<tr class="even">
+<td>theme_bw()</td>
+<td align="center">Classic dark-on-light</td>
+</tr>
+<tr class="odd">
+<td>theme_minimal()</td>
+<td align="center">A minimalistic theme with no background annotations</td>
+</tr>
+<tr class="even">
+<td>theme_classic()</td>
+<td align="center">A classic-looking theme, with x and y axis lines and no gridlines</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>plot1&lt;-plot1 + theme(legend.position = c(0.3, 0.9),
+          legend.direction = &quot;horizontal&quot;) +
+  theme_classic()
+  
+plot1 </code></pre>
+<p><img src="/graphs_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Additionaly we can plot the two bars, the one next to the other</p>
+<pre class="r"><code>plot2&lt;-ggplot(EVS_UK, aes(x = education, fill = gender)) + geom_bar(position = &quot;dodge&quot;) +
+  theme_classic()
+
+plot2</code></pre>
+<p><img src="/graphs_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="ordinal-variables" class="section level3">
+<h3>Ordinal variables</h3>
+<p>In this section we will use two varaibles describing anti-immigration attitudes, the first one is called <code>v184</code> and is asking responders to agree or desigree with the following statement “Immigrants take away jobs”. The second variable is called <code>v186</code> and is asking responders whether “Immigrants are responsible for crime”.</p>
+<pre class="r"><code>names(EVS_UK)[names(EVS_UK) == &quot;v184&quot;] &lt;- &quot;immi_jobs&quot;
+
+table(EVS_UK$immi_jobs) # This is to check whether the function was correctly specified</code></pre>
+<pre><code>## 
+##   1   2   3   4   5 
+##  71 197 631 610 272</code></pre>
+<p>We may add labels to the values using the functions we used at the beginning of the course:</p>
+<pre class="r"><code>EVS_UK$immi_jobs &lt;- ordered(EVS_UK$immi_jobs,#here you specify that this is ordered variable
+levels = c(1,2,3,4,5), # here you specify the values of the variable
+labels = c(&quot;Completely agree&quot;, &quot;Agree&quot;, &quot;Neither/nor&quot;,&quot;Disagree&quot;, &quot;Completely disagree&quot; ))  #here you specify the names of the values
+
+table(EVS_UK$immi_jobs)</code></pre>
+<pre><code>## 
+##    Completely agree               Agree         Neither/nor            Disagree 
+##                  71                 197                 631                 610 
+## Completely disagree 
+##                 272</code></pre>
+<p>We will do the same for the variable describing whether “Immigrants tare responsible for crime”.</p>
+<pre class="r"><code>EVS_UK$immi_crime &lt;- ordered(EVS_UK$v186,#here you specify that this is ordered variable
+levels = c(1,2,3,4,5),# here you specify the values of the variable
+labels = c(&quot;Completely agree&quot;, &quot;Agree&quot;, &quot;Neither/nor&quot;,&quot;Disagree&quot;, &quot;Completely disagree&quot; ))  #here you specify the names of the values
+
+table(EVS_UK$immi_jobs)</code></pre>
+<pre><code>## 
+##    Completely agree               Agree         Neither/nor            Disagree 
+##                  71                 197                 631                 610 
+## Completely disagree 
+##                 272</code></pre>
+<p><strong>Note</strong>: As you can see we can rename the variable and give names to the values all at once without using the names function. But sometimes we don’t have to rename the values this is why the <code>names()</code> function is very useful.</p>
+<pre class="r"><code>plot3&lt;-ggplot(na.omit(EVS_UK), aes(x = immi_crime),na.rm = TRUE) + geom_bar() + facet_grid(gender ~.)+
+  theme_classic() #The na.omit() function will remove NAs
+
+plot3</code></pre>
+<p><img src="/graphs_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="density-plots" class="section level3">
+<h3>Density Plots</h3>
+<pre class="r"><code>plot4 &lt;- ggplot(na.omit(EVS_UK), aes(immi_crime))
+
+plot4 + geom_density(aes(fill=factor(gender)), alpha=0.5) + 
+    labs(title=&quot;Density plot&quot;, 
+         subtitle=&quot;Anti-immigration attitudes by gender&quot;,
+         caption=&quot;Source: European Value Study&quot;,
+         x=&quot;Anti-immigration attitudes&quot;,
+         fill=&quot;Gender&quot;)+
+  theme_classic()</code></pre>
+<p><img src="/graphs_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="one-continuous-variable" class="section level3">
+<h3>One continuous variable</h3>
+<p>For the following example we will use a variable describing citizens’ satisfaction with the political system. the name of the variable is <code>v144</code>. We will use the <code>names()</code> function to give a meaningful name to the variable.</p>
+<p>The general formula is:
+names(my_data)[names(my_data) == “old.variable.name”] &lt;- “new_variable_name”</p>
+<pre class="r"><code>names(EVS_UK)[names(EVS_UK)==&quot;v144&quot;]&lt;- &quot;pol_sat&quot;
+
+table(EVS_UK$pol_sat)</code></pre>
+<pre><code>## 
+##   1   2   3   4   5   6   7   8   9  10 
+## 170 104 178 223 243 227 305 201  55  46</code></pre>
+<pre class="r"><code>plot5 &lt;- ggplot(na.omit(EVS_UK), aes(gender,pol_sat))
+
+plot5&lt;-plot5 + geom_boxplot(varwidth=T, fill=&quot;mediumpurple4&quot;) + 
+    labs(title=&quot;Box plot&quot;, 
+         subtitle=&quot;Satisfaction with the political system by gender&quot;,
+         caption=&quot;Source: European Value Study (2019)&quot;,
+         x=&quot;Gender&quot;,
+         y=&quot;Satisfied with the political system&quot;)
+
+plot5+theme_classic()</code></pre>
+<p><img src="/graphs_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><strong>See <a href="http://sape.inf.usi.ch/quick-reference/ggplot2/colour">here</a> for all other colours available</strong></p>
+</div>
+<div id="violin-plots" class="section level3">
+<h3>Violin Plots</h3>
+<pre class="r"><code>plot6 &lt;- ggplot(na.omit(EVS_UK), aes(education, pol_sat))
+plot6&lt;-plot6 + geom_violin(fill=&quot;skyblue&quot;) + 
+  labs(title=&quot;Violin plot&quot;, 
+ subtitle=&quot;Satisfaction with the political system by level of education&quot;,
+         caption=&quot;Source: European Value Study (2019)&quot;,
+         x=&quot;Education&quot;,
+         y=&quot;Satisfied with the political system&quot;)
+
+plot6+theme_classic()</code></pre>
+<p><img src="/graphs_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+</div>
+<div id="continuous-variables" class="section level2">
+<h2>Continuous variables</h2>
+<div id="lines" class="section level3">
+<h3>Lines</h3>
+<p>In this section we will use the <code>EconomistData</code> dataset.</p>
+<pre class="r"><code>plot7 &lt;- ggplot(data = EconomistData, mapping = aes(x = HDI, y = CPI)) +
+    geom_line() +
+    facet_wrap(facets = vars(Region))+
+  labs(title= &quot;Lines&quot;,
+        subtitle = &quot;Human development index versus consumer price index&quot;,
+         x = &quot;Human Development Index&quot;,
+         y = &quot;Consumer Price Index&quot;) +
+    theme_classic()
+
+plot7</code></pre>
+<p><img src="/graphs_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+</div>
+</div>
+<div id="d-plots-the-plotly-package" class="section level2">
+<h2>3D Plots: The plotly package</h2>
+<p>Let’s try to plot some 3D plots. To do so we should install an additional package entitled <code>plotly</code>, <code>install.package(&quot;plotly&quot;)</code>.</p>
+<pre class="r"><code>library(plotly)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<pre class="r"><code>plot8&lt;-p &lt;- plot_ly(EconomistData, x = ~HDI, y = ~CPI, z = ~HDI.Rank, color = ~Region, colors = c(&#39;#7B68EE&#39;, &#39;#800000&#39;)) %&gt;%
+  add_markers() %&gt;%
+  layout(scene = list(xaxis = list(title = &#39;HDI&#39;),
+                     yaxis = list(title = &#39;CPI&#39;),
+                     zaxis = list(title = &#39;HDI Rank&#39;)))
+plot8</code></pre>
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"visdat":{"f868b1942ff":["function () ","plotlyVisDat"]},"cur_data":"f868b1942ff","attrs":{"f868b1942ff":{"x":{},"y":{},"z":{},"color":{},"colors":["#7B68EE","#800000"],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"markers","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"HDI"},"yaxis":{"title":"CPI"},"zaxis":{"title":"HDI Rank"}},"hovermode":"closest","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[0.797,0.771,0.793,0.663,0.718,0.908,0.805,0.71,0.744,0.776,0.724,0.689,0.72,0.674,0.574,0.633,0.454,0.625,0.727,0.77,0.589,0.768,0.665,0.725,0.723,0.717,0.68,0.76,0.91,0.783,0.735],"y":[3,7.3,7.8,2.8,3.8,8.7,7.2,3.4,4.8,4.2,5.2,2.6,2.7,3.4,2.7,2.5,1.8,2.6,3.3,3,2.5,3.3,2.2,3.4,7,5.8,3,3.2,7.1,7,1.9],"z":[45,53,47,108,84,6,44,87,69,51,81,98,83,105,131,117,158,121,79,57,129,58,107,80,82,85,104,62,4,48,73],"type":"scatter3d","mode":"markers","name":"Americas","marker":{"color":"rgba(123,104,238,1)","line":{"color":"rgba(123,104,238,1)"}},"textfont":{"color":"rgba(123,104,238,1)"},"error_y":{"color":"rgba(123,104,238,1)"},"error_x":{"color":"rgba(123,104,238,1)"},"line":{"color":"rgba(123,104,238,1)"},"frame":null},{"x":[0.398,0.929,0.5,0.522,0.523,0.687,0.898,0.547,0.617,0.901,0.624,0.897,0.524,0.761,0.661,0.653,0.483,0.458,0.908,0.504,0.466,0.644,0.688,0.866,0.51,0.691,0.682,0.495,0.704,0.617],"y":[1.5,8.8,2.7,5.7,2.1,3.6,8.4,3.1,3,8,3.1,5.4,2.2,4.3,2.5,2.7,1.5,2.2,9.5,2.5,2.2,2.6,3.9,9.2,2.7,3.3,3.4,2.4,3.1,3.5],"z":[172,2,146,141,139,101,13,134,124,12,122,15,138,61,109,110,149,157,5,145,153,112,99,26,142,97,103,147,90,125],"type":"scatter3d","mode":"markers","name":"Asia Pacific","marker":{"color":"rgba(142,85,187,1)","line":{"color":"rgba(142,85,187,1)"}},"textfont":{"color":"rgba(142,85,187,1)"},"error_y":{"color":"rgba(142,85,187,1)"},"error_x":{"color":"rgba(142,85,187,1)"},"line":{"color":"rgba(142,85,187,1)"},"frame":null},{"x":[0.739,0.716,0.7,0.756,0.733,0.796,0.733,0.745,0.615,0.649,0.771,0.755,0.766,0.607,0.699,0.686,0.729,0.641],"y":[3.1,2.6,2.4,2.4,3.2,4,4.1,2.7,2.1,2.9,4,2.4,3.3,2.3,4.2,1.6,2.3,1.6],"z":[70,86,91,65,74,46,75,68,126,111,54,66,59,127,92,102,76,115],"type":"scatter3d","mode":"markers","name":"East EU Cemt Asia","marker":{"color":"rgba(148,67,138,1)","line":{"color":"rgba(148,67,138,1)"}},"textfont":{"color":"rgba(148,67,138,1)"},"error_y":{"color":"rgba(148,67,138,1)"},"error_x":{"color":"rgba(148,67,138,1)"},"line":{"color":"rgba(148,67,138,1)"},"frame":null},{"x":[0.885,0.886,0.863,0.771,0.84,0.865,0.895,0.835,0.882,0.884,0.905,0.861,0.816,0.898,0.908,0.874,0.805,0.81,0.867,0.832,0.91,0.943,0.813,0.809,0.781,0.834,0.884,0.878,0.904,0.903],"y":[7.8,7.5,7.8,3.3,6.3,4.4,9.4,6.4,9.4,7,8,3.4,4.6,8.3,7.5,3.9,4.2,4.8,8.5,5.6,8.9,9,5.5,6.1,3.6,4,5.9,6.2,9.3,8.8],"z":[19,18,28,55,31,27,16,34,22,20,9,29,38,14,7,24,43,40,25,36,3,1,39,41,50,35,21,23,10,11],"type":"scatter3d","mode":"markers","name":"EU W. Europe","marker":{"color":"rgba(147,48,92,1)","line":{"color":"rgba(147,48,92,1)"}},"textfont":{"color":"rgba(147,48,92,1)"},"error_y":{"color":"rgba(147,48,92,1)"},"error_x":{"color":"rgba(147,48,92,1)"},"line":{"color":"rgba(147,48,92,1)"},"frame":null},{"x":[0.698,0.806,0.644,0.707,0.573,0.888,0.698,0.76,0.739,0.76,0.582,0.705,0.831,0.77,0.632,0.698,0.846,0.462],"y":[2.9,5.1,2.9,2.7,1.8,5.8,4.5,4.6,2.5,2,3.4,4.8,7.2,4.4,2.6,3.8,6.8,2.1],"z":[96,42,113,88,132,17,95,63,71,64,130,89,37,56,119,94,30,154],"type":"scatter3d","mode":"markers","name":"MENA","marker":{"color":"rgba(139,28,48,1)","line":{"color":"rgba(139,28,48,1)"}},"textfont":{"color":"rgba(139,28,48,1)"},"error_y":{"color":"rgba(139,28,48,1)"},"error_x":{"color":"rgba(139,28,48,1)"},"line":{"color":"rgba(139,28,48,1)"},"frame":null},{"x":[0.486,0.427,0.633,0.331,0.316,0.482,0.568,0.343,0.328,0.433,0.286,0.533,0.4,0.43,0.537,0.349,0.363,0.674,0.42,0.541,0.344,0.353,0.509,0.45,0.329,0.48,0.4,0.359,0.453,0.728,0.322,0.625,0.295,0.459,0.429,0.459,0.773,0.336,0.619,0.408,0.522,0.466,0.435,0.446,0.43,0.376],"y":[2,3,6.1,3,1.9,2.5,5.5,2.2,2,2.4,2,2.2,2.2,3,1.9,2.5,2.7,3,3.5,3.9,2.1,2.2,2.2,3.5,3.2,3,3,2.8,2.4,5.1,2.7,4.4,2.5,2.4,5,2.9,4.8,2.5,4.1,1.6,3.1,3,2.4,2.4,3.2,2.2],"z":[148,167,118,181,185,150,133,179,183,163,187,137,170,165,136,177,174,106,168,135,178,176,143,160,182,151,171,175,159,77,184,120,186,156,166,155,52,180,123,169,140,152,162,161,164,173],"type":"scatter3d","mode":"markers","name":"SSA","marker":{"color":"rgba(128,0,0,1)","line":{"color":"rgba(128,0,0,1)"}},"textfont":{"color":"rgba(128,0,0,1)"},"error_y":{"color":"rgba(128,0,0,1)"},"error_x":{"color":"rgba(128,0,0,1)"},"line":{"color":"rgba(128,0,0,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>Want to learn more about <code>plotly</code>? You may visit <a href="https://plot.ly/ggplot2/" class="uri">https://plot.ly/ggplot2/</a></p>
+</div>
+</div>
